@@ -12,7 +12,8 @@ namespace dnxTcpEcho
         private static Socket server;
         private static List<Socket> clientList = new List<Socket>();
         private static object clientListLock = new object();
-        private static CancellationToken cancelToken = new CancellationToken();
+        private static CancellationTokenSource source = new CancellationTokenSource();
+        private static CancellationToken token = source.Token;
 
         public static void Main(string[] args)
         {
@@ -21,9 +22,12 @@ namespace dnxTcpEcho
             {
                 var inp = Console.ReadKey(true);
                 if (inp.Key == ConsoleKey.Escape) break;
-                var data = System.Text.Encoding.ASCII.GetBytes( inp.KeyChar.ToString());
+                var data = System.Text.Encoding.ASCII.GetBytes(inp.KeyChar.ToString());
                 var result = Parallel.ForEach(clientList, async (client) => await SocketTaskExtensions.SendAsync(client, new ArraySegment<byte>(data), SocketFlags.None));
             }
+            Console.WriteLine("Shutdown");
+            source.Cancel(true);
+            var resultShutdown = Parallel.ForEach(clientList, (client) => client.Shutdown(SocketShutdown.Both));
         }
 
 
@@ -39,12 +43,12 @@ namespace dnxTcpEcho
             {
                 while (true)
                 {
-                    var client = await SocketTaskExtensions.AcceptAsync(server);
-                    var t = new Task(_ => InitSocketClient(client), cancelToken, TaskCreationOptions.LongRunning);
+                    var client = await server.AcceptAsync();
+                    var t = new Task(_ => InitSocketClient(client), token, TaskCreationOptions.LongRunning);
                     t.Start();
                 }
             };
-            var loopAcceptTask = new Task(loopAccept, cancelToken, TaskCreationOptions.LongRunning);
+            var loopAcceptTask = new Task(loopAccept, token, TaskCreationOptions.LongRunning);
             loopAcceptTask.Start();
 
 
@@ -61,9 +65,9 @@ namespace dnxTcpEcho
 
             while (true)
             {
-                var size = await SocketTaskExtensions.ReceiveAsync(client, new ArraySegment<byte>(buf), SocketFlags.None);
-                if (size == 0) break;
-                await SocketTaskExtensions.SendAsync(client, new ArraySegment<byte>(buf, 0, size), SocketFlags.None);
+                var size = await client.ReceiveAsync(new ArraySegment<byte>(buf), SocketFlags.None);
+                if (size <= 0) break;
+                await client.SendAsync(new ArraySegment<byte>(buf, 0, size), SocketFlags.None);
             }
             lock (clientListLock)
                 clientList.Remove(client);
