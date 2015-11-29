@@ -7,7 +7,7 @@ rm -Rf dnxTcpEcho
 
 # git clone
 git clone https://github.com/darkcrash/dnxTcpEcho.git
-cd ~/dnxTcpEcho/src/
+cd ~/dnxTcpEcho/
 
 # Docker stop
 #DOCKERCONTAINARID=`docker ps -f image=dnxtcpecho --no-trunc=false -q`
@@ -17,7 +17,7 @@ cd ~/dnxTcpEcho/src/
 docker rmi -f dnxtcpecho
 
 # Docker Build
-docker build -t dnxtcpecho dnxTcpEcho
+docker build -t dnxtcpecho .
 
 # Docker Run
 docker run -d -t -p 5999:5999 dnxtcpecho
