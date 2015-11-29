@@ -20,10 +20,17 @@ namespace dnxTcpEcho
             InitSocket();
             while (true)
             {
-                var inp = Console.ReadKey(true);
-                if (inp.Key == ConsoleKey.Escape) break;
-                var data = System.Text.Encoding.ASCII.GetBytes(inp.KeyChar.ToString());
-                var result = Parallel.ForEach(clientList, (client) => client.Send(data, SocketFlags.None));
+                try
+                {
+                    var inp = Console.ReadKey(true);
+                    if (inp.Key == ConsoleKey.Escape) break;
+                    var data = System.Text.Encoding.ASCII.GetBytes(inp.KeyChar.ToString());
+                    var result = Parallel.ForEach(clientList, (client) => client.Send(data, SocketFlags.None));
+                }
+                catch (InvalidOperationException)
+                {
+                    Task.Delay(1000);
+                }
             }
             Console.WriteLine("Shutdown");
             source.Cancel(true);
