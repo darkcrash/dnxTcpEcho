@@ -1,9 +1,3 @@
-FROM microsoft/dotnet:0.0.1-alpha 
+FROM microsoft/dotnet:0.0.1-alpha-onbuild 
  
-RUN mkdir -p /dnxTcpEcho 
-WORKDIR /dnxTcpEcho/src/dnxTcpEcho
- 
-ENTRYPOINT ["dotnet", "run"] 
- 
-ONBUILD COPY . /dnxTcpEcho 
-ONBUILD RUN dotnet restore 
+RUN git clone https://github.com/darkcrash/dnxTcpEcho.git
