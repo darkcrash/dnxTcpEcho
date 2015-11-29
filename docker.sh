@@ -10,8 +10,8 @@ git clone https://github.com/darkcrash/dnxTcpEcho.git
 cd ~/dnxTcpEcho/src/
 
 # Docker stop
-DOCKERCONTAINARID=`docker ps -f image=dnxtcpecho --no-trunc=false -q`
-docker stop $DOCKERCONTAINARID
+#DOCKERCONTAINARID=`docker ps -f image=dnxtcpecho --no-trunc=false -q`
+#docker stop $DOCKERCONTAINARID
 
 # Docker images remove
 docker rmi -f dnxtcpecho
