@@ -1,4 +1,4 @@
-!#/usr/bin/bash
+#!/bin/bash
 
 dotnet restore
 dotnet compile src/dnxTcpEcho
