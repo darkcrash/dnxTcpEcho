@@ -23,10 +23,11 @@ namespace dnxTcpEcho
                 var inp = Console.ReadKey(true);
                 if (inp.Key == ConsoleKey.Escape) break;
                 var data = System.Text.Encoding.ASCII.GetBytes(inp.KeyChar.ToString());
-                var result = Parallel.ForEach(clientList, async (client) => await SocketTaskExtensions.SendAsync(client, new ArraySegment<byte>(data), SocketFlags.None));
+                var result = Parallel.ForEach(clientList, (client) => client.Send(data, SocketFlags.None));
             }
             Console.WriteLine("Shutdown");
             source.Cancel(true);
+            source.Token.WaitHandle.WaitOne();
             var resultShutdown = Parallel.ForEach(clientList, (client) => client.Shutdown(SocketShutdown.Both));
         }
 
@@ -39,11 +40,11 @@ namespace dnxTcpEcho
             server.Listen(100);
             Console.WriteLine($"{nameof(InitSocket)} {endp}");
 
-            Action loopAccept = async () =>
+            Action loopAccept = () =>
             {
                 while (true)
                 {
-                    var client = await server.AcceptAsync();
+                    var client = server.Accept();
                     var t = new Task(_ => InitSocketClient(client), token, TaskCreationOptions.LongRunning);
                     t.Start();
                 }
@@ -51,11 +52,10 @@ namespace dnxTcpEcho
             var loopAcceptTask = new Task(loopAccept, token, TaskCreationOptions.LongRunning);
             loopAcceptTask.Start();
 
-
         }
 
 
-        private static async void InitSocketClient(Socket client)
+        private static void InitSocketClient(Socket client)
         {
             lock (clientListLock)
                 clientList.Add(client);
@@ -65,9 +65,9 @@ namespace dnxTcpEcho
 
             while (true)
             {
-                var size = await client.ReceiveAsync(new ArraySegment<byte>(buf), SocketFlags.None);
+                var size = client.Receive(buf);
                 if (size <= 0) break;
-                await client.SendAsync(new ArraySegment<byte>(buf, 0, size), SocketFlags.None);
+                client.Send(buf, 0, size, SocketFlags.None);
             }
             lock (clientListLock)
                 clientList.Remove(client);
