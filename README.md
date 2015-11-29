@@ -1,3 +1,3 @@
 # dnxTcpEcho
 
-samples applications
+samples application
