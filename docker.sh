@@ -18,6 +18,3 @@ docker rmi -f dnxtcpecho
 
 # Docker Build
 docker build -t dnxtcpecho .
-
-# Docker Run
-docker run -d -t -p 5999:5999 dnxtcpecho
