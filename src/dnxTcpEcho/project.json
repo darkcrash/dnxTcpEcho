@@ -13,6 +13,7 @@
   "commands": {
     "dnxTcpEcho": "dnxTcpEcho"
   },
+
   "frameworks": {
     "dnxcore50": {
       "dependencies": {
