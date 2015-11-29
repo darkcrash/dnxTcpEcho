@@ -17,7 +17,7 @@ cd ~/dnxTcpEcho/src/
 docker rmi -f dnxtcpecho
 
 # Docker Build
-docker build -t dnxtcpecho .
+docker build -t dnxtcpecho dnxTcpEcho
 
 # Docker Run
 docker run -d -t -p 5999:5999 dnxtcpecho

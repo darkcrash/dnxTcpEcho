@@ -1,9 +1,9 @@
 FROM microsoft/dotnet:0.0.1-alpha 
  
-RUN mkdir -p /dotnetapp 
-WORKDIR /dotnetapp 
+RUN mkdir -p /dnxTcpEcho 
+WORKDIR /dnxTcpEcho
  
 ENTRYPOINT ["dotnet", "run"] 
  
-ONBUILD COPY . /dotnetapp 
+ONBUILD COPY . /dnxTcpEcho 
 ONBUILD RUN dotnet restore 
