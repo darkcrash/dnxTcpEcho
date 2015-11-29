@@ -13,7 +13,6 @@
   "commands": {
     "dnxTcpEcho": "dnxTcpEcho"
   },
-
   "frameworks": {
     "dnxcore50": {
       "dependencies": {
@@ -22,9 +21,10 @@
         "System.Threading": "4.0.11-beta-23516",
         "System.Threading.Tasks.Parallel": "4.0.0",
         "Microsoft.CSharp": "4.0.0",
-        "System.Net.Sockets": "4.0.10-beta-23019",
-        "System.Net.Primitives": "4.0.10-beta-23019",
-        "System.Net.NameResolution": "4.0.0-beta-23019",
+        "System.Net.Sockets": "4.1.0-beta-23516",
+        "System.Net.Primitives": "4.0.10-beta-23516",
+        "System.Net.NameResolution": "4.0.0-beta-23516",
+        "System.Private.Networking": "4.0.0-beta-23516",
         "System.Runtime": "4.0.21-beta-23516"
       }
     }
